@@ -1789,7 +1789,7 @@ MonoBehaviour:
   offCameraPositionObject: {fileID: 1142978340}
   cellCubeConfigPosObject: {fileID: 1309790691}
   cellCubeSlider: {fileID: 1697604074}
-  cellCubeCount: 4
+  cellCubeCount: 12
   configMenu: {fileID: 1636733739}
   leftHandAnchor: {fileID: 1747806058}
   rightHandAnchor: {fileID: 912691452}

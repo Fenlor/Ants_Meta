@@ -65,11 +65,11 @@ public class CellCube : MonoBehaviour
     //when hovering, allow for left and right controller positions to change direction
     public void HoverStart()
     {
-        Debug.Log("CellCube - OnHover()");
+        //Debug.Log("CellCube - OnHover()");
     }    
     public void SetSelected(bool newIsSelected)
     {
-        Debug.Log("CellCube - SetSelected: " + newIsSelected);
+        //Debug.Log("CellCube - SetSelected: " + newIsSelected);
         isSelected = newIsSelected;
     }
     public void ShowDirection()

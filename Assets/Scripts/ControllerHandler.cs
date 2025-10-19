@@ -71,15 +71,65 @@ public class ControllerHandler : MonoBehaviour
                 //{
                 //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
                 //}
-                               
-                if(cubeIndex == 2)
+
+                //if(cubeIndex == 2)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                //}
+                //else if(cubeIndex == 3)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                //}
+
+                if (cubeIndex == 0)
                 {
                     cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
                 }
-                else if(cubeIndex == 3)
+                else if (cubeIndex == 1)
                 {
                     cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
                 }
+                else if (cubeIndex == 2)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                }
+                else if (cubeIndex == 3)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                }
+                else if (cubeIndex == 4)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                }
+                else if (cubeIndex == 5)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                }
+                else if (cubeIndex == 6)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                }
+                else if (cubeIndex == 7)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                }
+                else if (cubeIndex == 8)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                }
+                else if (cubeIndex == 9)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                }
+                else if (cubeIndex == 10)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                }
+                else if (cubeIndex == 11)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                }
+
                 cellCube.SetActive(false);
                 cellCubeList.Add(cellCube);            
             }
@@ -185,7 +235,7 @@ public class ControllerHandler : MonoBehaviour
                 AntPlane antPlane = AntPlaneObject.GetComponent<AntPlane>();
                 if (antPlane != null)
                 {
-                    Debug.Log("Updating Ant Trail");
+                    //Debug.Log("Updating Ant Trail");
                     antPlane.UpdateAntTrail();
                 }
             }

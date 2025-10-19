@@ -132,7 +132,7 @@ public class AntPlane : MonoBehaviour
             moveTimer = 0f;
             if (activeCell != null)
             {
-                Debug.Log("AntMove - ACTING ON ACTIVE CELL!");
+                //Debug.Log("AntMove - ACTING ON ACTIVE CELL!");
                 AntActOnActiveCell();
             }
         }
@@ -164,8 +164,8 @@ public class AntPlane : MonoBehaviour
         //assume a cell will always change to the next in the cycle, so can we just use an index? start at 0 for white cell
         //get direction, set cell to next index (looping at end), then move?
 
-        Debug.Log("ActiveCell Count: " + cellCubeList.Count);
-        Debug.Log("CURRENT CELL ACTIVE?: " + activeCell.activeSelf + ", " + currentCellIndex);
+        //Debug.Log("ActiveCell Count: " + cellCubeList.Count);
+        //Debug.Log("CURRENT CELL ACTIVE?: " + activeCell.activeSelf + ", " + currentCellIndex);
 
         if (!activeCell.activeSelf)
         {
@@ -189,7 +189,7 @@ public class AntPlane : MonoBehaviour
         
         Vector3 pos = activeCell.transform.position;
 
-        Debug.Log("CURRENT CELL DIR?: " + currentCellCube.GetDirection() + ", " + nextCellIndex);
+        //Debug.Log("CURRENT CELL DIR?: " + currentCellCube.GetDirection() + ", " + nextCellIndex);
 
         //OK, so we have the direction of the current colour we are on. 
         //we set the material on active Cell
