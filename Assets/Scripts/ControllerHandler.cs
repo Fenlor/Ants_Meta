@@ -29,7 +29,7 @@ public class ControllerHandler : MonoBehaviour
     public Transform rightHandAnchor = null;
 
     public GameObject AntPlaneObject = null;
-    private bool isAntPlaneActive = true;
+    private bool isAntPlaneActive = false;
     private bool hasAntPlaneInit = false;
     
 
@@ -67,10 +67,10 @@ public class ControllerHandler : MonoBehaviour
 
                 cellCube.GetComponent<MeshRenderer>().material = possibleMaterials[cubeIndex];
                 cellCube.GetComponent<CellCube>().SetMaterial(possibleMaterials[cubeIndex]);
-                //if (cubeIndex %2 != 0)
-                //{
-                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
-                //}
+                if (cubeIndex % 2 != 0)
+                {
+                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                }
 
                 //if(cubeIndex == 2)
                 //{
@@ -81,54 +81,54 @@ public class ControllerHandler : MonoBehaviour
                 //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
                 //}
 
-                if (cubeIndex == 0)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
-                }
-                else if (cubeIndex == 1)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
-                }
-                else if (cubeIndex == 2)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
-                }
-                else if (cubeIndex == 3)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
-                }
-                else if (cubeIndex == 4)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
-                }
-                else if (cubeIndex == 5)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
-                }
-                else if (cubeIndex == 6)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
-                }
-                else if (cubeIndex == 7)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
-                }
-                else if (cubeIndex == 8)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
-                }
-                else if (cubeIndex == 9)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
-                }
-                else if (cubeIndex == 10)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
-                }
-                else if (cubeIndex == 11)
-                {
-                    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
-                }
+                //if (cubeIndex == 0)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                //}
+                //else if (cubeIndex == 1)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                //}
+                //else if (cubeIndex == 2)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                //}
+                //else if (cubeIndex == 3)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                //}
+                //else if (cubeIndex == 4)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                //}
+                //else if (cubeIndex == 5)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                //}
+                //else if (cubeIndex == 6)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                //}
+                //else if (cubeIndex == 7)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                //}
+                //else if (cubeIndex == 8)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.LEFT);
+                //}
+                //else if (cubeIndex == 9)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                //}
+                //else if (cubeIndex == 10)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                //}
+                //else if (cubeIndex == 11)
+                //{
+                //    cellCube.GetComponent<CellCube>().SetDirection(CellCube.Direction.RIGHT);
+                //}
 
                 cellCube.SetActive(false);
                 cellCubeList.Add(cellCube);            
