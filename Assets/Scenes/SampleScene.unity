@@ -1789,7 +1789,7 @@ MonoBehaviour:
   offCameraPositionObject: {fileID: 1142978340}
   cellCubeConfigPosObject: {fileID: 1309790691}
   cellCubeSlider: {fileID: 1697604074}
-  cellCubeCount: 12
+  cellCubeCount: 2
   configMenu: {fileID: 1636733739}
   leftHandAnchor: {fileID: 1747806058}
   rightHandAnchor: {fileID: 912691452}
@@ -4992,7 +4992,7 @@ MonoBehaviour:
   requestBodyTrackingPermissionOnStartup: 0
   requestFaceTrackingPermissionOnStartup: 0
   requestEyeTrackingPermissionOnStartup: 0
-  requestScenePermissionOnStartup: 0
+  requestScenePermissionOnStartup: 1
   requestRecordAudioPermissionOnStartup: 0
   _localDimming: 1
   _trackingOriginType: 1
