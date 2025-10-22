@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 6831e7f54c444114086d04bfd99e0365
+AssetOrigin:
+  serializedVersion: 1
+  productId: 162791
+  packageName: Attic Room
+  packageVersion: 1.3
+  assetPath: Assets/Attic Room/Scripts/RotateMoveCamera_InputSystem.cs
+  uploadId: 782178

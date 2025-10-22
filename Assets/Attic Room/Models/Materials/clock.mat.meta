@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e5e1cf05fa1a4564392c6e5acd5bd5eb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 162791
+  packageName: Attic Room
+  packageVersion: 1.3
+  assetPath: Assets/Attic Room/Models/Materials/clock.mat
+  uploadId: 782178

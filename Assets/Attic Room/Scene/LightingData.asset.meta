@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e306796e548efb44ebe94d4fdb248de3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 162791
+  packageName: Attic Room
+  packageVersion: 1.3
+  assetPath: Assets/Attic Room/Scene/LightingData.asset
+  uploadId: 782178

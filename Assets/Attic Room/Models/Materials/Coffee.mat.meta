@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 948c120f93a63244da440628a04d578f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 162791
+  packageName: Attic Room
+  packageVersion: 1.3
+  assetPath: Assets/Attic Room/Models/Materials/Coffee.mat
+  uploadId: 782178

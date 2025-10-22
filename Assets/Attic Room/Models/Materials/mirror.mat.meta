@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8f4d715f582639d478b81cb2e2a1f258
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 162791
+  packageName: Attic Room
+  packageVersion: 1.3
+  assetPath: Assets/Attic Room/Models/Materials/mirror.mat
+  uploadId: 782178
