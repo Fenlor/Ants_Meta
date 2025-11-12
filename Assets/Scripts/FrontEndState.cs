@@ -1,5 +1,12 @@
 using UnityEngine;
 
+//if this is used to load into chosen tutorial/scenario, we will have easy and normal(dont call them that though, find kinder words) (maybe more in the future)
+//difficulty levels. Is that just for scenario? tutorials will also have to include the
+//movement and more advanced interactions (which are both normal level activities)
+//are we still thinking about suggesting they play the 'mission' they are up to?
+//e.g. Tutorial one for new player, scenarioOne for a player that has finished the tutorials, etc...
+
+
 public class FrontEndState : GameState
 {
     public GameObject locomotionObject;

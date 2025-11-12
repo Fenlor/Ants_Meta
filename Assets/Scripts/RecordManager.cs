@@ -6,20 +6,21 @@ using Application = UnityEngine.Application;
 
 public class RecordManager : MonoBehaviour
 {
-    [System.Serializable]
-    public class User
-    {
-        public int id;        
-        public float percentComplete = 0f;
-        public float scenarioOneTime = 0f;
-        public int scenarioOneErrors = 0;
-        public float scenarioTwoTime = 0f;
-        public int scenarioTwoErrors = 0;
-        public float scenarioThreeTime = 0f;
-        public int scenarioThreeErrors = 0;
-        public float scenarioFourTime = 0f;
-        public int scenarioFourErrors = 0;
-    }
+    //[System.Serializable]
+    //public class User
+    //{
+    //    public int id;        
+    //    public float percentComplete = 0f;
+    //    public float scenarioOneTime = 0f;
+    //    public int scenarioOneErrors = 0;
+    //    public float scenarioTwoTime = 0f;
+    //    public int scenarioTwoErrors = 0;
+    //    public float scenarioThreeTime = 0f;
+    //    public int scenarioThreeErrors = 0;
+    //    public float scenarioFourTime = 0f;
+    //    public int scenarioFourErrors = 0;
+    //    public int currentCoins = 0;
+    //}
     [System.Serializable]
     public class UserList
     {
@@ -30,6 +31,9 @@ public class RecordManager : MonoBehaviour
 
     string filename = "";
 
+    //use this to test coin counts if not going in with a user. or do we just use user 1 to test?
+    public int coinCount = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -37,6 +41,9 @@ public class RecordManager : MonoBehaviour
         ReadCsvFile(filename);
         //CreateNewUser();
         //WriteCSV();
+
+        //FOR TESTING PURPOSES
+        //CreateNewUser();
     }
     public void ReadCsvFile(string filePath)
     {
@@ -88,6 +95,7 @@ public class RecordManager : MonoBehaviour
                             userList.users[userIndex].scenarioThreeErrors = int.Parse(columns[4 * (userIndex + 1) + 7]);
                             userList.users[userIndex].scenarioFourTime = float.Parse(columns[4 * (userIndex + 1) + 8]);
                             userList.users[userIndex].scenarioFourErrors = int.Parse(columns[4 * (userIndex + 1) + 9]);
+                            userList.users[userIndex].currentCoins = int.Parse(columns[4 * (userIndex + 1) + 10]);
                         }
 
                         Debug.Log("userList.users length:" + userList.users.Length);
@@ -138,11 +146,12 @@ public class RecordManager : MonoBehaviour
 
             for (int userIndex = 0; userIndex < userList.users.Length; ++userIndex)
             {
-                tw.WriteLine(userList.users[userIndex].id + "," + userList.users[userIndex].percentComplete + "," + 
+                tw.WriteLine(userList.users[userIndex].id + "," + userList.users[userIndex].percentComplete + "," +
                     userList.users[userIndex].scenarioOneTime + "," + userList.users[userIndex].scenarioOneErrors +
                     userList.users[userIndex].scenarioTwoTime + "," + userList.users[userIndex].scenarioTwoErrors +
                     userList.users[userIndex].scenarioThreeTime + "," + userList.users[userIndex].scenarioThreeErrors +
-                    userList.users[userIndex].scenarioFourTime + "," + userList.users[userIndex].scenarioFourErrors);
+                    userList.users[userIndex].scenarioFourTime + "," + userList.users[userIndex].scenarioFourErrors +
+                    userList.users[userIndex].currentCoins);
             }
             tw.Close();
         }
@@ -152,7 +161,7 @@ public class RecordManager : MonoBehaviour
         int usersLength = userList.users.Length;
         int newId = usersLength + 1;
         Array.Resize(ref userList.users, userList.users.Length + 1);
-        userList.users[usersLength] = new RecordManager.User();
+        userList.users[usersLength] = new User();
         userList.users[usersLength].id = newId;
         loggedInUserId = newId;
         Debug.Log("CreateNewUser - newId: " + newId);
@@ -170,6 +179,7 @@ public class RecordManager : MonoBehaviour
         return false;
     }
 
+
     public User GetLoggedInUser()
     {
         if(loggedInUserId >= 0)
@@ -177,5 +187,32 @@ public class RecordManager : MonoBehaviour
             return userList.users[loggedInUserId-1];
         }
         return null;
+    }
+
+    public void AddCoinValue(int coinValue)
+    {
+        //User loggedInUser = GetLoggedInUser();
+        //if(loggedInUser != null)
+        //{
+        //    userList.users[loggedInUserId].currentCoins += coinValue;
+        //    WriteCSV();
+        //}
+
+        coinCount += coinValue;
+    }
+
+    public int GetCoinValue() 
+    {
+        //int currentValue = 0;
+
+        //User loggedInUser = GetLoggedInUser();
+        //if (loggedInUser != null)
+        //{
+        //    currentValue = userList.users[loggedInUserId].currentCoins;           
+        //}
+
+        //return currentValue;
+
+        return coinCount;
     }
 }

@@ -59,13 +59,13 @@ public class LoginState : GameState
         //still need to check if it's a number though
         //then check if it exists in loaded csv dataset
         //if not return message saying so.
-        Debug.Log("LoginState - isUserLoggedIn: " + isUserLoggedIn);
+        //Debug.Log("LoginState - isUserLoggedIn: " + isUserLoggedIn);
         if (isUserLoggedIn)
         {
             //set TMP element to Id value
             textMeshProObject.GetComponent<TMPro.TextMeshProUGUI>().text = "Your Id number is: " + recordManager.loggedInUserId.ToString();
             //
-            Debug.Log("LoginState - returning GameStateName.GAMEPLAY");
+            //Debug.Log("LoginState - returning GameStateName.GAMEPLAY");
             return GameStateMachine.GameStateName.TUTORIALONE;
         }
         else
@@ -101,16 +101,16 @@ public class LoginState : GameState
     public void AttemptLogin()
     {
         int userId = int.Parse(idInputField.GetComponent<TMP_InputField>().text);
-        Debug.Log("userId: " + userId);
+        //Debug.Log("userId: " + userId);
         if (recordManager.AttemptLogin(userId))
         {
-            Debug.Log("LoginState, Login successful, userId: " + userId);
+            //Debug.Log("LoginState, Login successful, userId: " + userId);
             isUserLoggedIn = true;
             textMeshProObject.GetComponent<TMPro.TextMeshProUGUI>().text = "Your Id number is: " + recordManager.loggedInUserId.ToString();
         }
         else
         {
-            Debug.Log("LoginState, Login unsuccessful, userId: " + userId);
+            //Debug.Log("LoginState, Login unsuccessful, userId: " + userId);
         }
     }
 }

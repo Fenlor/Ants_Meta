@@ -48,7 +48,7 @@ public class GameplayState : GameState
             
             if (prevAvctivePanels != activePanels)
             {
-                Debug.Log("GAMESTATE Swapping panels, prevAvctivePanels, activePanels" + prevAvctivePanels + ", " + activePanels);
+                //Debug.Log("GAMESTATE Swapping panels, prevAvctivePanels, activePanels" + prevAvctivePanels + ", " + activePanels);
                 switch (prevAvctivePanels)
                 {
                     case 0:

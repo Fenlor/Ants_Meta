@@ -259,7 +259,7 @@ public class ScenarioOneEmpathyState : GameState
         //locomotionObject.SetActive(true);
         if (recordManager != null)
         {
-            RecordManager.User loggedInUser = recordManager.GetLoggedInUser();
+            User loggedInUser = recordManager.GetLoggedInUser();
             if (loggedInUser != null)
             {
                 loggedInUser.scenarioOneTime = assessmentTimer;
@@ -345,7 +345,7 @@ public class ScenarioOneEmpathyState : GameState
 
             if (recordManager != null)
             {
-                RecordManager.User loggedInUser = recordManager.GetLoggedInUser();
+                User loggedInUser = recordManager.GetLoggedInUser();
                 if (loggedInUser != null)
                 {
                     loggedInUser.scenarioOneErrors++;

@@ -79,7 +79,7 @@ public class ScenarioOneOutroState : GameState
         //locomotionObject.SetActive(true);
         if (recordManager != null)
         {
-            RecordManager.User loggedInUser = recordManager.GetLoggedInUser();
+            User loggedInUser = recordManager.GetLoggedInUser();
             if (loggedInUser != null)
             {
                 loggedInUser.scenarioOneTime = assessmentTimer;

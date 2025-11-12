@@ -113,7 +113,7 @@ public class TutorialThreeState : GameState
                         //Go straigt to scenario one if we havn't completed it yet
                         if(recordManager != null)
                         {
-                            RecordManager.User loggedInUser = recordManager.GetLoggedInUser();
+                            User loggedInUser = recordManager.GetLoggedInUser();
                             if (loggedInUser != null)
                             {
                                 if(loggedInUser.scenarioOneTime == 0f)

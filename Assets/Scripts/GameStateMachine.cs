@@ -61,14 +61,14 @@ public class GameStateMachine : MonoBehaviour
     //Should we assume we want to write to the users record .csv every state swap? makes sense I think
     void Update()
     {
-        Debug.Log("GameStateMachine - Update, current state: " + currentGameState);
+        //Debug.Log("GameStateMachine - Update, current state: " + currentGameState);
         newStateName = currentGameState.UpdateState();
         if(newStateName != currentGameState.stateName)
         {
             currentGameState.ShutDownState(); //can this include transitions in the current state? should expand so we can do some little animations and fades, etc...
             //use name of new gamestate to use as index to change gameState 
             int newIndex = (int)newStateName;
-            Debug.Log("GameStateMachine - changing state, current state: " + currentGameState.stateName + ", newState, newIndex: " + newStateName + ", " + newIndex);
+            //Debug.Log("GameStateMachine - changing state, current state: " + currentGameState.stateName + ", newState, newIndex: " + newStateName + ", " + newIndex);
             currentGameState = gameStates[newIndex];
             currentGameState.InitialiseState();           
         }
