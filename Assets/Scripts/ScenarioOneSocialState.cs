@@ -118,6 +118,7 @@ public class ScenarioOneSocialState : GameState
     private bool hasCollectedActionOne = false;
     private bool hasCollectedActionTwo = false;
     private int currentDialogueChoice = -1;
+    public int dialogueChoicesFound;
 
     public GameObject coinEffectPrefab;
 
@@ -141,16 +142,31 @@ public class ScenarioOneSocialState : GameState
     //private float timer = 0f;
 
     //public Button actionOneButton;
+    private int lockedInAction = 0;
 
 
-    private bool isActionOneSelected = false;
-    private bool isActionTwoSelected = false;
+    public bool isActionOneSelected = false;
+    public bool isActionTwoSelected = false;
+    public bool isActionLockedIn = false;
 
     public Color selectedButtonColour = Color.white;
     public Color defaultButtonColour = Color.blue;
 
     public GameObject heroScreenPanelOne;
     public GameObject heroScreenPanelTwo;
+
+    //shall we intruduce a state object?
+    //we have DIALOGUELOST, DIALOGUEFOUND, ACTIONCHOSEN, DIALOGUECHOSEN
+    //start of DIALOGUELOSTG, when all 4 are found return DIALOGUEFOUND
+
+    public enum SocialState
+    {
+        DialogueLost,
+        DialogueFound,
+        ActionChosen,
+        DialogueChosen
+    }
+    public SocialState socialState;
 
     void Start()
     {
@@ -190,14 +206,26 @@ public class ScenarioOneSocialState : GameState
         hiddenCueTwo.SetActive(true);
         hiddenCueThree.SetActive(true);
         hiddenCueFour.SetActive(true);
-        hiddenCueActionOne.SetActive(true);
-        hiddenCueActionTwo.SetActive(true);
+        //hiddenCueActionOne.SetActive(true);
+        //hiddenCueActionTwo.SetActive(true);
 
         isActionOneSelected = false;
         isActionTwoSelected = false;
 
         //hiddenCueActionOne.GetComponentInChildren<Canvas>().GetComponent<Outline>().enabled = true;
         //hiddenCueActionTwo.GetComponentInChildren<Canvas>().GetComponent<Outline>().enabled = true;
+
+        hasCollectedCueOne = false;
+        hasCollectedCueTwo = false;
+        hasCollectedCueThree = false;
+        hasCollectedCueFour = false;
+        hasCollectedActionOne = false;
+        hasCollectedActionTwo = false;
+        currentDialogueChoice = -1;
+        dialogueChoicesFound = 0;
+        isActionLockedIn = false;
+
+        socialState = SocialState.DialogueLost;
     }
     //private ScenarioStateMachine.STATE UpdateScenarioState()
     //{
@@ -206,6 +234,31 @@ public class ScenarioOneSocialState : GameState
     //}
     override public GameStateMachine.GameStateName UpdateState()
     {
+        //when should we start the timer?
+
+        switch (socialState)
+        {
+            case(SocialState.DialogueLost):
+                //starting state, user must find at least 3 of the 4 dialogue options
+                socialState = UpdateDialgoueLost();
+                break;
+            case(SocialState.DialogueFound):
+                //user can still add the 4th dialogue option
+                //user can choose action which teleports them into place for dialogue options
+                socialState = UpdateDialogueFound();
+                break;
+            case(SocialState.ActionChosen):
+                //User is in one of two positions (sitting or standing next to
+                //choose from found dialogue options to continue
+                socialState = UpdateActionChosen();
+                break;
+            case(SocialState.DialogueChosen):
+                socialState = UpdateDialogueChosen();
+                break;
+            default:
+                break; 
+        }
+
         //RotateAroundY(hiddenCueActionOne);
         //RotateAroundY(hiddenCueActionTwo);
 
@@ -240,12 +293,10 @@ public class ScenarioOneSocialState : GameState
                     PlaySuccessAudio();
 
                     lailaObject.GetComponent<Animator>().SetTrigger("Neutral");
-
                 }
             }
             else 
             {
-
                 //then check if player is standing within radius of Laila AND looking at her genral direction FOR a set amount of time (2 seconds to start testing>)
                 if (lailaObject != null && cameraRig != null)
                 {
@@ -369,7 +420,7 @@ public class ScenarioOneSocialState : GameState
         //UpdateButtons
         //only change if they are dirty though.
 
-        return UpdateTutorialOne();
+        return UpdateSocialIntroOne();
     }
     override public void ShutDownState()
     {
@@ -399,13 +450,19 @@ public class ScenarioOneSocialState : GameState
         hiddenCueFour.SetActive(false);
         hiddenCueActionOne.SetActive(false);
         hiddenCueActionTwo.SetActive(false);
+
+        cueOneCanvas.SetActive(false);
+        cueTwoCanvas.SetActive(false);
+        cueThreeCanvas.SetActive(false);
+        cueFourCanvas.SetActive(false);
+        cueVerifyCanvas.SetActive(false);
     }
     override public void TeleOn()
     {
         //hasTeleportedIn = true;
     }
    
-    private GameStateMachine.GameStateName UpdateTutorialOne()
+    private GameStateMachine.GameStateName UpdateSocialIntroOne()
     {
         //so, we have active emotion and previou emotion, use to turn on and off the models.
         //do we float panels with emotion names on them for the user to pick? sure!
@@ -417,7 +474,10 @@ public class ScenarioOneSocialState : GameState
         }
 
         return GameStateMachine.GameStateName.SCENARIOONESOCIAL;
-    } 
+    }
+
+    //BIG BLUE BUTTON TO RETURN!!!?
+
     //public void HandleBigBlueButton()
     //{
     //    bblWasPressed = true;
@@ -428,6 +488,117 @@ public class ScenarioOneSocialState : GameState
     //    bblWasPressed = true;
     //}
 
+    SocialState UpdateDialgoueLost()
+    {
+        if (dialogueChoicesFound >= 3)
+        {
+            //go to next state but don't hide the last dialogue option 
+            
+            hiddenCueActionOne.SetActive(true);
+            hiddenCueActionTwo.SetActive(true);
+
+            return SocialState.DialogueFound;
+        }        
+        else
+        {
+            //turn on interactive dialogue objects the player has to find
+            //does user have to find all of them?
+            //what if after 3 of 4 we tell the user (with audio voice over) that
+            //they can proceed to the next bit or finish looking for the last one
+            //then have an audio voice over finding all the dialogue option
+            //easy are very easy to find as they need to be visiable from the camera locations we lock them in
+            //do we allow telport anchor movement for easy? could also have them for hard
+            
+
+
+            return SocialState.DialogueLost;
+        }
+    }
+    SocialState UpdateDialogueFound()
+    {
+        //start timer now?
+        //or several timers. e.g. 1 minute to gatehr dialgoue options. make easy not so hidden
+        //definetley put in difficulty levels. cant even expect any of these users to have
+        //used VR before, let alone not get nauses when moving around and other issues
+
+        if (!isActionLockedIn)
+        {
+            return SocialState.ActionChosen;
+        }
+        else
+        {
+            //turn on Action icons for player to choose
+            //wait for player choice
+            //wait for last dialgoue option to be found (optinal)
+            if (dialogueChoicesFound >= 4)
+            {
+                //play audio for "That's great, you have found all dialogue options!"
+
+            }
+
+            //how do we lock in an action
+            //don't want user to have too many clicks
+            //click and hold? that seems like too much all of a sudden if first used here
+            //how about a button or if user clicks it a second time in a row?
+            //how about first time it is selected since that already takes two clicks
+            //make sure audio plays and locks the second click
+            //how to add a universal lock to all interactions while voice over or some other
+            //timer is running
+
+
+            if (isActionOneSelected || isActionTwoSelected)
+            {
+                
+                isActionLockedIn = true;
+                
+            }
+
+            return SocialState.DialogueFound;
+        }
+
+    }
+    SocialState UpdateActionChosen()
+    {
+        //Teleport player to location and stop tracking position
+        //Dialogue options
+
+        
+        if (!true)
+        {
+
+            return SocialState.DialogueChosen;
+        }
+        else
+        {
+            //turn on Dialogue options
+            //wait for player choice
+            cueOneCanvas.SetActive(hasCollectedCueOne);
+            cueTwoCanvas.SetActive(hasCollectedCueTwo);
+            cueThreeCanvas.SetActive(hasCollectedCueThree);
+
+            cueFourCanvas.SetActive(hasCollectedCueFour);
+            cueVerifyCanvas.SetActive(true);
+
+            return SocialState.ActionChosen;
+        }
+    }
+    SocialState UpdateDialogueChosen() 
+    {
+        //Do we let user get here on incorrect dialogue?
+
+
+        if (interactionComplete)
+        {
+
+            return SocialState.DialogueChosen;
+        }
+        else
+        {
+
+            return SocialState.DialogueChosen;
+        }
+    }
+
     public void InstructionsButtonPressed()
     {
         instructionsRead = true;
@@ -436,6 +607,7 @@ public class ScenarioOneSocialState : GameState
     public void CorrectChoice()
     {
         //activeEmotion++;
+
     }
 
     public void MakeGuess()
@@ -450,30 +622,81 @@ public class ScenarioOneSocialState : GameState
         //    activeEmotion++;
         //}      
 
-        switch (currentDialogueChoice)
-        {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            default:
-                ++errors;
+        //so if an action button is selected then use that and dialogue together
+        //easy mode: move/teleport player to position
+        //normal: player have to interact with chair or move close/pat either shoulder with either hand.
 
-                if (recordManager != null)
-                {
-                    User loggedInUser = recordManager.GetLoggedInUser();
-                    if (loggedInUser != null)
+        //what if we did an action and that locks us into that position on any difficulty level, then 
+        //we choose the dialogue?
+        //hmm, maybe not. wait for both to be selected so less buttons and then we can teleport player into position.
+
+        if (lockedInAction > 0)
+        {
+            //what do we do now? teleport/move player into position, play out dialogue and watch Laila either get happy or stay sad.
+
+            switch (currentDialogueChoice)
+            {
+                case 1:
+                    PlaySuccessAudio();
+                    lailaObject.GetComponent<Animator>().SetTrigger("Neutral");
+                    interactionComplete = true;
+                    break;
+                case 2:
+                    PlaySuccessAudio();
+                    lailaObject.GetComponent<Animator>().SetTrigger("Neutral");
+                    interactionComplete = true;
+                    break;
+                case 3:
+                    //PlaySuccessAudio();
+                    //lailaObject.GetComponent<Animator>().SetTrigger("Neutral");
+                    //interactionComplete = true;
+
+                    if (failureAudio is not null)
                     {
-                        loggedInUser.scenarioOneErrors++;
+
+                        GetComponent<AudioSource>().clip = failureAudio;
+                        GetComponent<AudioSource>().Play();
                     }
-                }
-                break;
-        }      
-    }
+                    ++errors;
+
+                    if (recordManager != null)
+                    {
+                        User loggedInUser = recordManager.GetLoggedInUser();
+                        if (loggedInUser != null)
+                        {
+                            loggedInUser.scenarioOneErrors++;
+                        }
+                    }
+
+                    break;
+                case 4:
+                    if (failureAudio is not null)
+                    {
+
+                        GetComponent<AudioSource>().clip = failureAudio;
+                        GetComponent<AudioSource>().Play();
+                    }
+
+                    //PlayFailureAudio
+                    //this is the "don't cry, it's not that hard" option
+                    ++errors;
+
+                    if (recordManager != null)
+                    {
+                        User loggedInUser = recordManager.GetLoggedInUser();
+                        if (loggedInUser != null)
+                        {
+                            loggedInUser.scenarioOneErrors++;
+                        }
+                    }
+                    break;
+                default:
+                    
+                    break;
+            }
+        }
+    }   
+
     public void PlaySuccessAudio()
     {
         if (successAudio is not null)        {
@@ -493,51 +716,56 @@ public class ScenarioOneSocialState : GameState
   
     public void DialogueCueFound(int cueNumber)
     {
+        scenarioOneSocialObject.SetActive(false);
         //if cue found, deactivate object and give coin(s)
         switch (cueNumber) 
         {
             case 1:
                 if (!hasCollectedCueOne)
-                {                    
+                {
+                    ++dialogueChoicesFound;
                     hasCollectedCueOne = true;
                     hiddenCueOne.SetActive(false);
-                    cueOneCanvas.SetActive(true);
-                    cueVerifyCanvas.SetActive(true);
+                    //cueOneCanvas.SetActive(true);
+                    //cueVerifyCanvas.SetActive(true);
                     dialogueOneVoiceOver.Play();
-                    SpawnCoin(1, hiddenCueOne.transform.position);
+                    SpawnCoin(1, hiddenCueOne.transform.position);                    
                 }               
                 break;
             case 2:
                 if (!hasCollectedCueTwo)
-                {                    
+                {
+                    ++dialogueChoicesFound;
                     hasCollectedCueTwo = true;
                     hiddenCueTwo.SetActive(false);
-                    cueTwoCanvas.SetActive(true);
-                    cueVerifyCanvas.SetActive(true);
+                    //cueTwoCanvas.SetActive(true);
+                    //cueVerifyCanvas.SetActive(true);
                     dialogueTwoVoiceOver.Play();
-                    SpawnCoin(1, hiddenCueTwo.transform.position);
+                    SpawnCoin(1, hiddenCueTwo.transform.position);                    
                 }                    
                 break;
             case 3:
                 if (!hasCollectedCueThree)
-                {                    
+                {
+                    ++dialogueChoicesFound;
                     hiddenCueThree.SetActive(false);
                     hasCollectedCueThree = true;
-                    cueThreeCanvas.SetActive(true);
-                    cueVerifyCanvas.SetActive(true);
+                    //cueThreeCanvas.SetActive(true);
+                    //cueVerifyCanvas.SetActive(true);
                     dialogueThreeVoiceOver.Play();
-                    SpawnCoin(1, hiddenCueThree.transform.position);
+                    SpawnCoin(1, hiddenCueThree.transform.position);                   
                 }               
                 break;
             case 4:
                 if (!hasCollectedCueFour)
-                {                    
+                {
+                    ++dialogueChoicesFound;
                     hiddenCueFour.SetActive(false);
                     hasCollectedCueFour = true;
-                    cueFourCanvas.SetActive(true);
-                    cueVerifyCanvas.SetActive(true);
+                    //cueFourCanvas.SetActive(true);
+                    //cueVerifyCanvas.SetActive(true);
                     dialogueFourVoiceOver.Play();
-                    SpawnCoin(1, hiddenCueFour.transform.position); 
+                    SpawnCoin(1, hiddenCueFour.transform.position);
                 }                
                 break;
             default:
@@ -546,6 +774,7 @@ public class ScenarioOneSocialState : GameState
     }
     public void ActionFound(int actionNumber)
     {
+        scenarioOneSocialObject.SetActive(false);
         //if action found, deactivate object and give coin(s)
         switch (actionNumber)
         {
@@ -557,52 +786,36 @@ public class ScenarioOneSocialState : GameState
                     //first time, give coin and unlock ability to use
                     //Play Voice over
                     //do we then select this action
-                    //hiddenCueActionOne.SetActive(false);
-                    actionOneVoiceOver.Play();
+                    //hiddenCueActionOne.SetActive(false);                    
                     SpawnCoin(1, hiddenCueActionOne.transform.position);
                     //have it spin in place                    
                 }
                 else
                 {
-
                 }
 
-                if (isActionOneSelected)
-                {
-                    isActionTwoSelected = false;
-                }
-                else
-                {
-                    isActionOneSelected = true;
-                    isActionTwoSelected = false;
-                   
-                }
-                             
+                actionOneVoiceOver.Play();
+
+                isActionOneSelected = true;
+                isActionTwoSelected = false;                             
 
                 break;
             case 2:
                 if (!hasCollectedActionTwo)
-                {                    
+                {
                     hasCollectedActionTwo = true;
-                    //hiddenCueActionTwo.SetActive(false);
-                    actionTwoVoiceOver.Play();
+                    //hiddenCueActionTwo.SetActive(false);                    
                     SpawnCoin(1, hiddenCueActionTwo.transform.position);
                 }
                 else
                 {
-
                 }
 
-                if (isActionTwoSelected)
-                {
-                    isActionOneSelected = false;                 
-                    
-                }
-                else
-                {
-                    isActionOneSelected = false;
-                    isActionTwoSelected = true;
-                }
+                actionTwoVoiceOver.Play();
+
+                isActionOneSelected = false;
+                isActionTwoSelected = true;
+                
                 break;
             default:
                 break;
@@ -610,6 +823,14 @@ public class ScenarioOneSocialState : GameState
 
         hiddenCueActionOne.GetComponentInChildren<Canvas>().GetComponent<Outline>().enabled = isActionOneSelected;
         hiddenCueActionTwo.GetComponentInChildren<Canvas>().GetComponent<Outline>().enabled = isActionTwoSelected;
+    }
+
+    public void LockInSelectedAction()
+    {
+        if (isActionOneSelected || isActionTwoSelected)
+        {
+            lockedInAction = isActionOneSelected ? 1 : 2;            
+        }
     }
 
     public void SetCurrentDialogueOption(int currentChoice)
@@ -727,11 +948,5 @@ public class ScenarioOneSocialState : GameState
     {
         isSpinning = false;
 
-    }
-
-    public void SelectButton(UnityEngine.UI.Button button)
-    {
-        button.Select();
-        EventSystem.current.SetSelectedGameObject(button.gameObject);
     }
 }

@@ -1,3 +1,4 @@
+using Oculus.Interaction.Locomotion;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -58,6 +59,9 @@ public class ScenarioOneIntroState : GameState
     public GameObject coinEffectObject;
 
     public GameObject chairObject;
+    public Transform chairTeleportTransform;
+
+    public GameObject teleportUser;
         
     //How to handle difficulty levels?
     //starting with two
@@ -68,28 +72,28 @@ public class ScenarioOneIntroState : GameState
     //just split into two states for now, make this one the easy state
 
     public Transform xrOrigin;
-    public class TeleportUser : MonoBehaviour
-    {
-        public Transform cameraRig;
+    //public class TeleportUser : MonoBehaviour
+    //{
+    //    public Transform cameraRig;
 
-        public void TeleportTo(Vector3 targetPos)
-        {
-            Vector3 cameraOffset = cameraRig.GetComponentInChildren<Camera>().transform.localPosition;
-            Vector3 offset = new Vector3(cameraOffset.x, 0, cameraOffset.z);
-            cameraRig.transform.position = targetPos - offset;
-        }
-    }
-    private TeleportUser teleportUser;
+    //    public void TeleportTo(Vector3 targetPos)
+    //    {
+    //        Vector3 cameraOffset = cameraRig.GetComponentInChildren<Camera>().transform.localPosition;
+    //        Vector3 offset = new Vector3(cameraOffset.x, 0, cameraOffset.z);
+    //        cameraRig.transform.position = targetPos - offset;
+    //    }
+    //}
+    //private TeleportUser teleportUser;
 
     public GameObject playerMovement;
-
+    public FirstPersonLocomotor locomotor;
+    public OVRPlayerController playerController;
 
     void Start()
     {
         stateName = GameStateMachine.GameStateName.SCENARIOONEINTRO;
 
-        //teleportUser.AddComponent<TeleportUser>();
-        //teleportUser.cameraRig = xrOrigin;
+        teleportUser.GetComponent<TeleportUser>().cameraRig = xrOrigin;
     }
     override public void InitialiseState()
     {
@@ -118,8 +122,19 @@ public class ScenarioOneIntroState : GameState
 
 
         //init loggedInUser? for coins and for debug
+        //Vector3 teleToPos = chairTeleportTransform.position;
+        //teleportUser.GetComponent<TeleportUser>().TeleportTo(chairObject.transform.position, chairTeleportTransform.localRotation);
 
+        //teleportUser.GetComponent<TeleportUser>().TeleportTo(chairTeleportTransform.position, chairTeleportTransform.localRotation);
+        if (locomotor != null)
+        {
+           //locomotor.DisableMovement();
+           //locomotor.
+        }
+        if(playerController != null)
+        {
 
+        }
     }
     
     override public GameStateMachine.GameStateName UpdateState()
@@ -153,6 +168,11 @@ public class ScenarioOneIntroState : GameState
     }
     override public void ShutDownState()
     {
+        //Vector3 teleToPos = chairTeleportTransform.position;
+        //teleportUser.GetComponent<TeleportUser>().TeleportTo(chairObject.transform.position, chairObject.transform.rotation);
+
+        
+
         //tenable locomationObject
         //locomotionObject.SetActive(true);
         if (recordManager != null)
@@ -186,6 +206,13 @@ public class ScenarioOneIntroState : GameState
 
         if (nextButtonPressed)
         {
+            //teleportUser.GetComponent<TeleportUser>().TeleportTo(chairTeleportTransform.position, chairTeleportTransform.localRotation);
+            
+            //if(locomotor != null)
+            //{
+            //    locomotor.DisableMovement();
+            //}
+
             if (successAudio is not null)
             {
                 //backGroundMusic.oneshot
@@ -233,6 +260,8 @@ public class ScenarioOneIntroState : GameState
     public void SetShouldStartScenario()
     {
         shouldStartScenario = true;
+
+       
     }
 
     public void PlayVoiceOver()

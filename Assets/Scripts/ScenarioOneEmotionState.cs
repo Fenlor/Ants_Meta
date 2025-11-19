@@ -69,6 +69,10 @@ public class ScenarioOneEmotionState : GameState
     public int coinScore = 5;
     public int consolationCoinScore = 1;
 
+    public GameObject happyCanvas;
+    public GameObject sadCanvas;
+    public GameObject angryCanvas;
+    public GameObject fearCanvas;
 
     //public ScenarioStateMachine scenarioStateMachine;
 
@@ -239,6 +243,11 @@ public class ScenarioOneEmotionState : GameState
             {
                 GetComponent<AudioSource>().PlayOneShot(happy);
             }
+
+            happyCanvas.GetComponent<Outline>().enabled = true;
+            sadCanvas.GetComponent<Outline>().enabled = false;
+            angryCanvas.GetComponent<Outline>().enabled = false;
+            fearCanvas.GetComponent<Outline>().enabled = false;
         }
         else if (currentChoice == 1)
         {
@@ -246,20 +255,35 @@ public class ScenarioOneEmotionState : GameState
             {
                 GetComponent<AudioSource>().PlayOneShot(sad);
             }
+
+            happyCanvas.GetComponent<Outline>().enabled = false;
+            sadCanvas.GetComponent<Outline>().enabled = true;
+            angryCanvas.GetComponent<Outline>().enabled = false;
+            fearCanvas.GetComponent<Outline>().enabled = false;
         }
         else if (currentChoice == 2)
         {
-            if (fear != null)
+            if (anger != null)
             {
                 GetComponent<AudioSource>().PlayOneShot(anger);
             }
+
+            happyCanvas.GetComponent<Outline>().enabled = false;
+            sadCanvas.GetComponent<Outline>().enabled = false;
+            angryCanvas.GetComponent<Outline>().enabled = true;
+            fearCanvas.GetComponent<Outline>().enabled = false;
         }
         else if (currentChoice == 3)
         {
-            if (anger != null)
+            if (fear != null)
             {
                 GetComponent<AudioSource>().PlayOneShot(fear);
             }
+
+            happyCanvas.GetComponent<Outline>().enabled = false;
+            sadCanvas.GetComponent<Outline>().enabled = false;
+            angryCanvas.GetComponent<Outline>().enabled = false;
+            fearCanvas.GetComponent<Outline>().enabled = true;
         }
     }
 
@@ -327,6 +351,13 @@ public class ScenarioOneEmotionState : GameState
                     }
                 }
             }
+
+            //any choice resets currentChoice to 0 and disables outlines
+            currentChoice = 0;
+            happyCanvas.GetComponent<Outline>().enabled = false;
+            sadCanvas.GetComponent<Outline>().enabled = false;
+            angryCanvas.GetComponent<Outline>().enabled = false;
+            fearCanvas.GetComponent<Outline>().enabled = false;
         }
     }
 

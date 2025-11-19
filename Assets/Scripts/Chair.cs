@@ -7,6 +7,7 @@ public class Chair : MonoBehaviour
 {
     public GameObject coinEffectPrefab;    
     public TeleportationProvider teleportationProvider;
+    public Transform coinSpawnTransform;
 
     void Start()
     {
@@ -23,7 +24,7 @@ public class Chair : MonoBehaviour
     {
         if (coinEffectPrefab != null) 
         {
-            GameObject coin = Instantiate(coinEffectPrefab, transform.position, Quaternion.identity);
+            GameObject coin = Instantiate(coinEffectPrefab, coinSpawnTransform.position, Quaternion.identity);
             coin.SetActive(true);
             coin.GetComponent<Coin>().coinValue = value;
         }

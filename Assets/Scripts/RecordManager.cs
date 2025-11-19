@@ -31,8 +31,12 @@ public class RecordManager : MonoBehaviour
 
     string filename = "";
 
+    
     //use this to test coin counts if not going in with a user. or do we just use user 1 to test?
     public int coinCount = 0;
+
+    //activityCoinCount is for the session and will get banked on completion of activity?
+    public int activityCoinCount = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -111,7 +115,6 @@ public class RecordManager : MonoBehaviour
             Debug.Log($"An error occurred: {ex.Message}");
         }
     }
-
     private int CountLinesInFile(string filePath)
     {
         int counter = 0;
@@ -130,7 +133,6 @@ public class RecordManager : MonoBehaviour
         
         return counter;
     }
-
     public void WriteCSV()
     {
         Debug.Log("WriteCSV, userList.users.Length:" + userList.users.Length);
@@ -179,7 +181,6 @@ public class RecordManager : MonoBehaviour
         return false;
     }
 
-
     public User GetLoggedInUser()
     {
         if(loggedInUserId >= 0)
@@ -192,16 +193,16 @@ public class RecordManager : MonoBehaviour
     public void AddCoinValue(int coinValue)
     {
         //User loggedInUser = GetLoggedInUser();
-        //if(loggedInUser != null)
+        //if (loggedInUser != null)
         //{
         //    userList.users[loggedInUserId].currentCoins += coinValue;
         //    WriteCSV();
         //}
 
-        coinCount += coinValue;
+        activityCoinCount += coinValue;
     }
 
-    public int GetCoinValue() 
+    public int GetActivityCoinValue() 
     {
         //int currentValue = 0;
 
@@ -213,6 +214,17 @@ public class RecordManager : MonoBehaviour
 
         //return currentValue;
 
-        return coinCount;
+        return activityCoinCount;
+    }
+
+    public int GetBankedCoins()
+    {
+        int bankedCoins = 0;
+        User loggedInUser = GetLoggedInUser();
+        if (loggedInUser != null)
+        {
+            bankedCoins = userList.users[loggedInUserId].currentCoins;
+        }
+        return bankedCoins;
     }
 }

@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 using static System.TimeZoneInfo;
 
 //This will play out the first part of the scenario and then start timer and expect user to pick correct emotion on display.
@@ -10,7 +11,7 @@ using static System.TimeZoneInfo;
 
 public class ScenarioOneEmpathyState : GameState
 {
-    public GameObject locomotionObject;
+    //public GameObject locomotionObject;
     [Range(0f, 1f)]
     public float timeBuffer = 0.05f;
     private float timer = 0.0f;
@@ -70,6 +71,9 @@ public class ScenarioOneEmpathyState : GameState
 
     public AudioClip successAudio;
     public AudioClip failureAudio;
+    public AudioSource dialogueOne;
+    public AudioSource dialogueTwo;
+    public AudioSource dialogueThree;
 
     public GameObject hintMenu;
 
@@ -82,6 +86,13 @@ public class ScenarioOneEmpathyState : GameState
     //Canvas with Question prompt
     //"Think about why Laila is feeling sad"
     //"What would you say to her now"
+
+    public GameObject empathyChoiceOne;
+    public GameObject empathyChoiceTwo;
+    public GameObject empathyChoiceThree;
+    public GameObject empathyChoiceVerify;
+
+    public int currentChoice = -1;
 
     void Start()
     {
@@ -119,12 +130,20 @@ public class ScenarioOneEmpathyState : GameState
         if(socialAudio is not null)
         {
             GetComponent<AudioSource>().PlayOneShot(socialAudio);
-        }       
+        }
 
         //if(hintMenu is not null)
         //{
         //    hintMenu.SetActive(true);
         //}
+
+        empathyChoiceOne.SetActive(true);
+        empathyChoiceTwo.SetActive(true);
+        empathyChoiceThree.SetActive(true);
+        empathyChoiceVerify.SetActive(true);
+
+        currentChoice = -1;
+
     }
     //private ScenarioStateMachine.STATE UpdateScenarioState()
     //{
@@ -275,6 +294,11 @@ public class ScenarioOneEmpathyState : GameState
         //    //backGroundMusic.oneshot
         //    GetComponent<AudioSource>().Stop();
         //}
+
+        empathyChoiceOne.SetActive(false);
+        empathyChoiceTwo.SetActive(false);
+        empathyChoiceThree.SetActive(false);
+        empathyChoiceVerify.SetActive(false);
     }
     override public void TeleOn()
     {
@@ -316,7 +340,42 @@ public class ScenarioOneEmpathyState : GameState
         //activeEmotion++;
     }
 
-    public void MakeGuess(int guess)
+    public void SetCurrentChoice(int newChoice)
+    {
+        currentChoice = newChoice;
+
+        //need to play audio as well herez
+
+        switch(currentChoice) 
+        {
+            case 1:
+                empathyChoiceOne.GetComponent<Outline>().enabled = true;
+                empathyChoiceTwo.GetComponent<Outline>().enabled = false;
+                empathyChoiceThree.GetComponent<Outline>().enabled = false;
+                empathyChoiceVerify.GetComponent<Outline>().enabled = false;
+                break;
+            case 2:
+                empathyChoiceOne.GetComponent<Outline>().enabled = false;
+                empathyChoiceTwo.GetComponent<Outline>().enabled = true;
+                empathyChoiceThree.GetComponent<Outline>().enabled = false;
+                empathyChoiceVerify.GetComponent<Outline>().enabled = false;
+                break;
+            case 3:
+                empathyChoiceOne.GetComponent<Outline>().enabled = false;
+                empathyChoiceTwo.GetComponent<Outline>().enabled = false;
+                empathyChoiceThree.GetComponent<Outline>().enabled = true;
+                empathyChoiceVerify.GetComponent<Outline>().enabled = false;
+                break;
+            default:
+                empathyChoiceOne.GetComponent<Outline>().enabled = false;
+                empathyChoiceTwo.GetComponent<Outline>().enabled = false;
+                empathyChoiceThree.GetComponent<Outline>().enabled = false;
+                empathyChoiceVerify.GetComponent<Outline>().enabled = false;
+                break;
+        }
+    }
+
+    public void MakeGuess()
     {
 
         //1 - Correct
@@ -328,8 +387,9 @@ public class ScenarioOneEmpathyState : GameState
         //    activeEmotion++;
         //}        
 
-        if (guess == 1 || guess == 2)
+        if (currentChoice == 2)
         {
+            //this is the most correct answer
             correctChoice = true;
 
 
@@ -339,7 +399,18 @@ public class ScenarioOneEmpathyState : GameState
                 GetComponent<AudioSource>().Play();
             }
         }
-        else
+        if(currentChoice == 3)
+        {
+            //this is the semi-correct answer
+            correctChoice = true;
+
+            if (successAudio is not null)
+            {
+                GetComponent<AudioSource>().clip = successAudio;
+                GetComponent<AudioSource>().Play();
+            }
+        }
+        else if(currentChoice == 1)
         {
             ++errors;
 
@@ -359,6 +430,7 @@ public class ScenarioOneEmpathyState : GameState
             }
         }
     }
+
 
     //hint menu is attached to the wrist, only shows when direction is close to looking at headset forward
    

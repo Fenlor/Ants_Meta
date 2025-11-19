@@ -78,9 +78,7 @@ public class Coin : MonoBehaviour
                         currentSpeed = maxRotSpeed;
                         state = SpinState.Holding;
                     }                   
-
-                    StartCoroutine(MoveToHand());
-
+                    
                     break;
                 case SpinState.Holding:
                     timer += Time.deltaTime;
@@ -88,6 +86,9 @@ public class Coin : MonoBehaviour
                     {
                         state = SpinState.Decelerating;
                     }
+
+                    StartCoroutine(MoveToHand());
+
                     break;
                 case SpinState.Decelerating:
                     currentSpeed -= acceleration * Time.deltaTime;
@@ -162,7 +163,7 @@ public class Coin : MonoBehaviour
                 recordManager.AddCoinValue(coinValue);
 
                 //get coin value from RecordManager and update HUD?
-                coinCountText.text = "= " + recordManager.GetCoinValue();
+                coinCountText.text = "= " + recordManager.GetActivityCoinValue();
             }            
         }
 

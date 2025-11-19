@@ -3,7 +3,9 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using static System.TimeZoneInfo;
 
-//This will play out the first part of the scenario and then start timer and expect user to pick correct emotion on display.
+//Shows end of scenario canvas along with voice over
+//add coins found in scenario to users total and save to file
+//either go back to frontend or next activity if applicable
 
 public class ScenarioOneOutroState : GameState
 {
@@ -37,6 +39,10 @@ public class ScenarioOneOutroState : GameState
 
     public GameObject hintMenu;
 
+    public GameObject experienceRing;
+
+    private int totalCoins = 0;
+
     //public ScenarioStateMachine scenarioStateMachine;
 
     void Start()
@@ -53,25 +59,28 @@ public class ScenarioOneOutroState : GameState
         transitionTimer = 0f;
         assessmentTimer = 0f;
         errors = 0;
+        totalCoins = 0;
 
-        //if (backGroundMusic is not null && audioSourceObject is not null) 
-        //{
-        //    //backGroundMusic.oneshot
-        //    //backGroundMusic.Play();
-        //    audioSourceObject.GetComponent<AudioSource>().loop = true;
-        //    audioSourceObject.GetComponent<AudioSource>().clip = backGroundMusic;
-        //    audioSourceObject.GetComponent<AudioSource>().Play();
-        //}
+        if (experienceRing != null && recordManager != null)
+        {
+            totalCoins = recordManager.GetComponent<RecordManager>().GetBankedCoins();
+            experienceRing.GetComponent<ExperienceRing>().SetStartingXP(totalCoins);            
+        }
     }
-    //private ScenarioStateMachine.STATE UpdateScenarioState()
-    //{
-
-    //    return ScenarioStateMachine.STATE.INTRO;
-    //}
     override public GameStateMachine.GameStateName UpdateState()
     {    
         assessmentTimer += Time.deltaTime;
-        return UpdateTutorialOne();
+        Debug.Log("assessmentTimer: " + assessmentTimer);
+        if (assessmentTimer > 1)
+        {
+            if (experienceRing != null && recordManager != null)
+            {
+                int coinsToAdd = recordManager.GetActivityCoinValue();
+                experienceRing.GetComponent<ExperienceRing>().AddXP(coinsToAdd);
+                recordManager.activityCoinCount = 0;
+            }
+        }
+        return UpdateOutro();
     }
     override public void ShutDownState()
     {
@@ -103,7 +112,7 @@ public class ScenarioOneOutroState : GameState
         //hasTeleportedIn = true;
     }
    
-    private GameStateMachine.GameStateName UpdateTutorialOne()
+    private GameStateMachine.GameStateName UpdateOutro()
     {
         //so, we have active emotion and previou emotion, use to turn on and off the models.
         //do we float panels with emotion names on them for the user to pick? sure!
