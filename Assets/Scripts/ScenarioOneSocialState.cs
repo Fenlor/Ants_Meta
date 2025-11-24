@@ -29,8 +29,6 @@ public class ScenarioOneSocialState : GameState
     //we are using through out the same scenario
     //probably doesnt need the audio listener and clip either as intro should have started this and outro should end it when it wraps up
     public GameObject scenarioOneSocialObject;
-    //public AudioClip backGroundMusic;
-    //public AudioListener audioListener;
     public RecordManager recordManager;
 
     private float transitionTimeDelta = 0.2f;
@@ -69,8 +67,8 @@ public class ScenarioOneSocialState : GameState
     public GameObject rightShoulderObject;
     public GameObject leftShoulderObject;
 
-    public AudioClip successAudio;
-    public AudioClip failureAudio;
+    public AudioSource successAudio;
+    public AudioSource failureAudio;
 
     private bool isRightHandCloseToShoulder = false;
     private bool isLeftHandCloseToShoulder = false;
@@ -79,7 +77,7 @@ public class ScenarioOneSocialState : GameState
     private float positiveFeedbackTime = 1f;
     private float positiveFeedbackTimer = 0;
 
-    public AudioClip voiceInstructions;
+    public AudioSource voiceInstructions;
 
     private bool isInChair = false;
 
@@ -106,6 +104,14 @@ public class ScenarioOneSocialState : GameState
     public AudioSource dialogueFourVoiceOver;
     public AudioSource actionOneVoiceOver;
     public AudioSource actionTwoVoiceOver;
+    public AudioSource foundEnoughOptionsVoiceOver;
+    public AudioSource foundAllOptionsVoiceOver;
+    public AudioSource actionsUnlockedVoiceOver;
+
+    private bool hasPlayedFoundAllOptionsVoiceOver = false;
+
+    public GameObject actionLockInButton;
+    
 
     //for easy mode we show the following action prompts so user doesn't have to 
     //do we then teleport the user to the chair or move into comfort position? or just let them move where they want to?
@@ -144,7 +150,6 @@ public class ScenarioOneSocialState : GameState
     //public Button actionOneButton;
     private int lockedInAction = 0;
 
-
     public bool isActionOneSelected = false;
     public bool isActionTwoSelected = false;
     public bool isActionLockedIn = false;
@@ -154,6 +159,9 @@ public class ScenarioOneSocialState : GameState
 
     public GameObject heroScreenPanelOne;
     public GameObject heroScreenPanelTwo;
+
+    public GameObject teleportAnchorActionTwo;
+    public bool teleportedToActionTwo = false;
 
     //shall we intruduce a state object?
     //we have DIALOGUELOST, DIALOGUEFOUND, ACTIONCHOSEN, DIALOGUECHOSEN
@@ -173,9 +181,7 @@ public class ScenarioOneSocialState : GameState
         stateName = GameStateMachine.GameStateName.SCENARIOONESOCIAL;
 
         //delay the anim trigger
-        //lailaObject.GetComponent<Animator>().SetTrigger("SitToSad");
-        //UnityEngine.UI.Button button = hiddenCueActionOne.GetComponentInChildren<UnityEngine.UI.Button>();
-        //SelectButton(button);
+        //lailaObject.GetComponent<Animator>().SetTrigger("SitToSad");        
 
         //heroScreenPanelOne.GetComponent<UnityEngine.UI.Image>().color = selectedButtonColour;
         //heroScreenPanelTwo.GetComponent<UnityEngine.UI.Image>().color = defaultButtonColour;
@@ -195,26 +201,16 @@ public class ScenarioOneSocialState : GameState
 
         if (voiceInstructions is not null)
         {
-            GetComponent<AudioSource>().PlayOneShot(voiceInstructions);
+            voiceInstructions.Play();
         }
       
-        //locomotionObject.SetActive(false);
-
         scenarioOneSocialObject.SetActive(true);
-
-        hiddenCueOne.SetActive(true);
-        hiddenCueTwo.SetActive(true);
-        hiddenCueThree.SetActive(true);
-        hiddenCueFour.SetActive(true);
-        //hiddenCueActionOne.SetActive(true);
-        //hiddenCueActionTwo.SetActive(true);
-
+        //hiddenCueOne.SetActive(true);
+        //hiddenCueTwo.SetActive(true);
+        //hiddenCueThree.SetActive(true);
+        //hiddenCueFour.SetActive(true);
         isActionOneSelected = false;
         isActionTwoSelected = false;
-
-        //hiddenCueActionOne.GetComponentInChildren<Canvas>().GetComponent<Outline>().enabled = true;
-        //hiddenCueActionTwo.GetComponentInChildren<Canvas>().GetComponent<Outline>().enabled = true;
-
         hasCollectedCueOne = false;
         hasCollectedCueTwo = false;
         hasCollectedCueThree = false;
@@ -224,18 +220,12 @@ public class ScenarioOneSocialState : GameState
         currentDialogueChoice = -1;
         dialogueChoicesFound = 0;
         isActionLockedIn = false;
-
+        teleportedToActionTwo = false;
         socialState = SocialState.DialogueLost;
     }
-    //private ScenarioStateMachine.STATE UpdateScenarioState()
-    //{
-
-    //    return ScenarioStateMachine.STATE.INTRO;
-    //}
     override public GameStateMachine.GameStateName UpdateState()
     {
         //when should we start the timer?
-
         switch (socialState)
         {
             case(SocialState.DialogueLost):
@@ -266,6 +256,11 @@ public class ScenarioOneSocialState : GameState
         if (!isAssessing && instructionsRead && !interactionComplete)
         {
             isAssessing = true;
+
+            hiddenCueOne.SetActive(true);
+            hiddenCueTwo.SetActive(true);
+            hiddenCueThree.SetActive(true);
+            hiddenCueFour.SetActive(true);
         }
 
         if (isAssessing)
@@ -450,6 +445,7 @@ public class ScenarioOneSocialState : GameState
         hiddenCueFour.SetActive(false);
         hiddenCueActionOne.SetActive(false);
         hiddenCueActionTwo.SetActive(false);
+        actionLockInButton.SetActive(false);
 
         cueOneCanvas.SetActive(false);
         cueTwoCanvas.SetActive(false);
@@ -496,6 +492,9 @@ public class ScenarioOneSocialState : GameState
             
             hiddenCueActionOne.SetActive(true);
             hiddenCueActionTwo.SetActive(true);
+            //actionLockInButton.SetActive(true);
+
+            foundEnoughOptionsVoiceOver.Play();
 
             return SocialState.DialogueFound;
         }        
@@ -521,8 +520,15 @@ public class ScenarioOneSocialState : GameState
         //definetley put in difficulty levels. cant even expect any of these users to have
         //used VR before, let alone not get nauses when moving around and other issues
 
-        if (!isActionLockedIn)
+        if (lockedInAction > 0)
         {
+            hiddenCueActionOne.SetActive(false);
+            hiddenCueActionTwo.SetActive(false);
+            //actionLockInButton.SetActive(false);
+
+            //move player into position, get that teleport working...
+            //update, player has to move themselves, teleport for easy mode
+
             return SocialState.ActionChosen;
         }
         else
@@ -533,7 +539,11 @@ public class ScenarioOneSocialState : GameState
             if (dialogueChoicesFound >= 4)
             {
                 //play audio for "That's great, you have found all dialogue options!"
-
+                if (!hasPlayedFoundAllOptionsVoiceOver)
+                {
+                    foundAllOptionsVoiceOver.Play();
+                    hasPlayedFoundAllOptionsVoiceOver = true;
+                }                
             }
 
             //how do we lock in an action
@@ -553,6 +563,25 @@ public class ScenarioOneSocialState : GameState
                 
             }
 
+            //depending on which action is chosen, activate and show matching teleport anchor
+            if (isActionOneSelected)
+            {
+                if (isInChair)
+                {
+                    lockedInAction = 1;
+                }
+                teleportAnchorActionTwo.SetActive(false);
+            }
+            else if (isActionTwoSelected)
+            {
+                teleportAnchorActionTwo.SetActive(true);
+
+                if (teleportedToActionTwo)
+                {
+                    lockedInAction = 2;
+                }
+            }
+
             return SocialState.DialogueFound;
         }
 
@@ -563,8 +592,13 @@ public class ScenarioOneSocialState : GameState
         //Dialogue options
 
         
-        if (!true)
+        if (interactionComplete)
         {
+            cueOneCanvas.SetActive(false);
+            cueTwoCanvas.SetActive(false);
+            cueThreeCanvas.SetActive(false);
+            cueFourCanvas.SetActive(false);
+            cueVerifyCanvas.SetActive(false);
 
             return SocialState.DialogueChosen;
         }
@@ -575,7 +609,6 @@ public class ScenarioOneSocialState : GameState
             cueOneCanvas.SetActive(hasCollectedCueOne);
             cueTwoCanvas.SetActive(hasCollectedCueTwo);
             cueThreeCanvas.SetActive(hasCollectedCueThree);
-
             cueFourCanvas.SetActive(hasCollectedCueFour);
             cueVerifyCanvas.SetActive(true);
 
@@ -647,15 +680,9 @@ public class ScenarioOneSocialState : GameState
                     interactionComplete = true;
                     break;
                 case 3:
-                    //PlaySuccessAudio();
-                    //lailaObject.GetComponent<Animator>().SetTrigger("Neutral");
-                    //interactionComplete = true;
-
                     if (failureAudio is not null)
                     {
-
-                        GetComponent<AudioSource>().clip = failureAudio;
-                        GetComponent<AudioSource>().Play();
+                        failureAudio.Play();
                     }
                     ++errors;
 
@@ -673,8 +700,7 @@ public class ScenarioOneSocialState : GameState
                     if (failureAudio is not null)
                     {
 
-                        GetComponent<AudioSource>().clip = failureAudio;
-                        GetComponent<AudioSource>().Play();
+                        failureAudio.Play();
                     }
 
                     //PlayFailureAudio
@@ -700,10 +726,8 @@ public class ScenarioOneSocialState : GameState
     public void PlaySuccessAudio()
     {
         if (successAudio is not null)        {
-           
-            GetComponent<AudioSource>().clip = successAudio;
-            GetComponent<AudioSource>().Play();
 
+            successAudio.Play();
             lailaObject.GetComponent<Animator>().SetTrigger("Neutral");
         }
     }
@@ -787,7 +811,7 @@ public class ScenarioOneSocialState : GameState
                     //Play Voice over
                     //do we then select this action
                     //hiddenCueActionOne.SetActive(false);                    
-                    SpawnCoin(1, hiddenCueActionOne.transform.position);
+                    //SpawnCoin(1, hiddenCueActionOne.transform.position);
                     //have it spin in place                    
                 }
                 else
@@ -805,7 +829,7 @@ public class ScenarioOneSocialState : GameState
                 {
                     hasCollectedActionTwo = true;
                     //hiddenCueActionTwo.SetActive(false);                    
-                    SpawnCoin(1, hiddenCueActionTwo.transform.position);
+                    //SpawnCoin(1, hiddenCueActionTwo.transform.position);
                 }
                 else
                 {
@@ -827,6 +851,9 @@ public class ScenarioOneSocialState : GameState
 
     public void LockInSelectedAction()
     {
+        //coin if fast enough
+        //do we need another voice over of the action here?
+        //also deactvate the buttona and the other action, or all of the actions?
         if (isActionOneSelected || isActionTwoSelected)
         {
             lockedInAction = isActionOneSelected ? 1 : 2;            
@@ -948,5 +975,10 @@ public class ScenarioOneSocialState : GameState
     {
         isSpinning = false;
 
+    }
+
+    public void TeleportTwoSelected()
+    {
+        teleportedToActionTwo = true;
     }
 }

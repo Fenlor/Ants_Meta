@@ -78,4 +78,13 @@ public class GameStateMachine : MonoBehaviour
             stateTMPObject.GetComponent<TMPro.TextMeshProUGUI>().text = currentGameState.stateName.ToString();
         }
     }
+
+    public void GoBackToFrontEndState()
+    {
+        newStateName = GameStateMachine.GameStateName.FRONTEND;
+        currentGameState.ShutDownState();
+        int newIndex = (int)newStateName;
+        currentGameState = gameStates[newIndex];
+        currentGameState.InitialiseState();
+    }
 }

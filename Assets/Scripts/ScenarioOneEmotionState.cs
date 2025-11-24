@@ -12,12 +12,9 @@ using static System.TimeZoneInfo;
 
 public class ScenarioOneEmotionState : GameState
 {
-    //public GameObject locomotionObject;
+
     [Range(0f, 1f)]
     public float timeBuffer = 0.05f;
-    //private float timer = 0.0f;
-    //private Vector3 posAtTeleport;
-
     [Range(0f, 5f)]
     public float sittingIdleTime;
     private float sittingIdleTimer = 0f;
@@ -26,55 +23,35 @@ public class ScenarioOneEmotionState : GameState
     //we are using through out the same scenario
     //probably doesnt need the audio listener and clip either as intro should have started this and outro should end it when it wraps up
     public GameObject ScenarioOneEmotionObject;
-    public GameObject ScenarioOneAnswersObject;
-    //public AudioClip backGroundMusic;
-    //public AudioListener audioListener;
+    public GameObject ScenarioOneAnswersObject;    
     public RecordManager recordManager;
-
-    //private float transitionTimeDelta = 0.2f;
-    //public float transitionTimer = 0f;
-
-    //private bool bblWasPressed = false;
-    //public int activeEmotion = 0;
-    //private int prevActiveEmotion = 0;
-    //private int tutorialIndex = 0;
     public bool correctChoice = false;
     private int errors;
-    //private int guessIndex = -1;
     private bool shouldStartScenario = false;
     //can we stop the user from spamming the read again?
     private bool hasPlayedVoiceOver = false;
-
     public bool isAssessing = false;
     private float assessmentTimer;
     public float scoreThresholdMax = 25f;
     public AudioSource incorrectVoiceInstructions;//also use a text bubble with this
-
     public GameObject lailaObject;
-
     private float positiveFeedbackTime = 1f;
     private float positiveFeedbackTimer = 0;
-
-    public AudioClip successAudio;
-    public AudioClip failureAudio;
-    public AudioClip instructionVoiceOver;
-    public AudioClip happy;
-    public AudioClip sad;
-    public AudioClip fear;
-    public AudioClip anger;
-
+    public AudioSource successAudio;
+    public AudioSource failureAudio;
+    public AudioSource instructionVoiceOver;
+    public AudioSource happy;
+    public AudioSource sad;
+    public AudioSource fear;
+    public AudioSource anger;
     public int currentChoice = -1;
-
     public GameObject coinEffectPrefab;
     public int coinScore = 5;
     public int consolationCoinScore = 1;
-
     public GameObject happyCanvas;
     public GameObject sadCanvas;
     public GameObject angryCanvas;
     public GameObject fearCanvas;
-
-    //public ScenarioStateMachine scenarioStateMachine;
 
     void Start()
     {
@@ -92,23 +69,9 @@ public class ScenarioOneEmotionState : GameState
         errors = 0;
         currentChoice = -1;
 
-        //if (backGroundMusic is not null) 
-        //{
-        //    //backGroundMusic.oneshot
-        //    //backGroundMusic.Play();
-        //    GetComponent<AudioSource>().loop = true;
-        //    GetComponent<AudioSource>().clip = backGroundMusic;
-        //    GetComponent<AudioSource>().Play();
-        //}
-
         ScenarioOneEmotionObject.SetActive(true);
     }
 
-    //private ScenarioStateMachine.STATE UpdateScenarioState()
-    //{
-
-    //    return ScenarioStateMachine.STATE.INTRO;
-    //}
     override public GameStateMachine.GameStateName UpdateState()
     {
         //what until user presses next button
@@ -151,8 +114,6 @@ public class ScenarioOneEmotionState : GameState
     }
     override public void ShutDownState()
     {
-        //tenable locomationObject
-        //locomotionObject.SetActive(true);
         if (recordManager != null)
         {
             User loggedInUser = recordManager.GetLoggedInUser();
@@ -168,12 +129,6 @@ public class ScenarioOneEmotionState : GameState
 
         ScenarioOneEmotionObject.SetActive(false);
         ScenarioOneAnswersObject.SetActive(false);
-
-        //if (backGroundMusic is not null)
-        //{
-        //    //backGroundMusic.oneshot
-        //    GetComponent<AudioSource>().Stop();
-        //}
     }
     override public void TeleOn()
     {
@@ -224,7 +179,7 @@ public class ScenarioOneEmotionState : GameState
     {
         if (instructionVoiceOver is not null)
         {
-            GetComponent<AudioSource>().PlayOneShot(instructionVoiceOver);            
+            instructionVoiceOver.Play();            
         }
     }
     public void CorrectChoice()
@@ -241,7 +196,7 @@ public class ScenarioOneEmotionState : GameState
         {
             if(happy != null)
             {
-                GetComponent<AudioSource>().PlayOneShot(happy);
+                happy.Play();
             }
 
             happyCanvas.GetComponent<Outline>().enabled = true;
@@ -253,7 +208,7 @@ public class ScenarioOneEmotionState : GameState
         {
             if (sad != null)
             {
-                GetComponent<AudioSource>().PlayOneShot(sad);
+                sad.Play();
             }
 
             happyCanvas.GetComponent<Outline>().enabled = false;
@@ -265,7 +220,7 @@ public class ScenarioOneEmotionState : GameState
         {
             if (anger != null)
             {
-                GetComponent<AudioSource>().PlayOneShot(anger);
+                anger.Play();
             }
 
             happyCanvas.GetComponent<Outline>().enabled = false;
@@ -277,7 +232,7 @@ public class ScenarioOneEmotionState : GameState
         {
             if (fear != null)
             {
-                GetComponent<AudioSource>().PlayOneShot(fear);
+                fear.Play();
             }
 
             happyCanvas.GetComponent<Outline>().enabled = false;
@@ -309,7 +264,7 @@ public class ScenarioOneEmotionState : GameState
 
                 if (successAudio is not null)
                 {
-                    GetComponent<AudioSource>().PlayOneShot(successAudio);
+                    successAudio.Play();
                 }
 
                 //if within time threshold, give 5 coins. otherwise give 1 coin.
@@ -331,7 +286,7 @@ public class ScenarioOneEmotionState : GameState
 
                 if (failureAudio is not null)
                 {
-                    GetComponent<AudioSource>().PlayOneShot(failureAudio);
+                    failureAudio.Play();
                 }
 
                 //do we queue audio up so important audio still plays but not over the top of other important audio

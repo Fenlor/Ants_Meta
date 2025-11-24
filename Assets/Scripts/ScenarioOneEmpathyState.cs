@@ -26,54 +26,25 @@ public class ScenarioOneEmpathyState : GameState
     //probably doesnt need the audio listener and clip either as intro should have started this and outro should end it when it wraps up
     public GameObject scenarioOneEmpathyObject;
     public GameObject empathyAnswersObject;
-
-    //public AudioClip backGroundMusic;
-    //public AudioListener audioListener;
     public RecordManager recordManager;
 
     private float transitionTimeDelta = 0.2f;
     public float transitionTimer = 0f;
-
     private bool bblWasPressed = false;
-    //public int activeEmotion = 0;
-    //private int prevActiveEmotion = 0;
-    //private int tutorialIndex = 0;
     public bool correctChoice = false;
     private int errors;
-    //private int guessIndex = -1;
-
     public bool isAssessing = false;
     private float assessmentTimer;
-
     public GameObject lailaObject;
-
     public GameObject hintMenuObject;
-
-    //public GameObject anchorPoint;
-
-    //public ScenarioStateMachine scenarioStateMachine;
-
-    //[Range (0f, 2f)]
-    //public float radiusCheck = 1f;
-
     //public GameObject cameraRig;
-    public AudioClip socialAudio;
+    public AudioSource socialAudio;
     private bool instructionsRead = false;
-    //private float interactionTimer = 0f;
-    //[Range(0f, 2f)]
-    //public float interactionTimeNeeded = 1f;
-    //private bool interactionComplete = false;
-
-    //public GameObject rightHandAnchor;
-    //public GameObject leftHandAnchor;
-    //public GameObject rightShoulderObject;
-    //public GameObject leftShoulderObject;
-
-    public AudioClip successAudio;
-    public AudioClip failureAudio;
-    public AudioSource dialogueOne;
-    public AudioSource dialogueTwo;
-    public AudioSource dialogueThree;
+    public AudioSource successAudio;
+    public AudioSource failureAudio;
+    public AudioSource dialogueLeaveLaila;
+    public AudioSource dialogueStayAndPlay;
+    public AudioSource dialogueStaySilent;
 
     public GameObject hintMenu;
 
@@ -129,7 +100,7 @@ public class ScenarioOneEmpathyState : GameState
 
         if(socialAudio is not null)
         {
-            GetComponent<AudioSource>().PlayOneShot(socialAudio);
+            socialAudio.Play();
         }
 
         //if(hintMenu is not null)
@@ -353,6 +324,9 @@ public class ScenarioOneEmpathyState : GameState
                 empathyChoiceTwo.GetComponent<Outline>().enabled = false;
                 empathyChoiceThree.GetComponent<Outline>().enabled = false;
                 empathyChoiceVerify.GetComponent<Outline>().enabled = false;
+
+
+
                 break;
             case 2:
                 empathyChoiceOne.GetComponent<Outline>().enabled = false;
@@ -394,9 +368,8 @@ public class ScenarioOneEmpathyState : GameState
 
 
             if (successAudio is not null)
-            {              
-                GetComponent<AudioSource>().clip = successAudio;
-                GetComponent<AudioSource>().Play();
+            {
+                successAudio.Play();
             }
         }
         if(currentChoice == 3)
@@ -406,8 +379,7 @@ public class ScenarioOneEmpathyState : GameState
 
             if (successAudio is not null)
             {
-                GetComponent<AudioSource>().clip = successAudio;
-                GetComponent<AudioSource>().Play();
+                successAudio.Play();
             }
         }
         else if(currentChoice == 1)
@@ -425,8 +397,7 @@ public class ScenarioOneEmpathyState : GameState
 
             if (failureAudio is not null)
             {
-                GetComponent<AudioSource>().clip = failureAudio;
-                GetComponent<AudioSource>().Play();
+                failureAudio.Play();
             }
         }
     }

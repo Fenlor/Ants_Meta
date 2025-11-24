@@ -20,30 +20,18 @@ public class ScenarioOneOutroState : GameState
     public GameObject ScenarioOneEnvironmentObject;
     public GameObject ScenarioOnePlayers;
     public GameObject ScenarioOneOutroObject;
-    public AudioClip backGroundMusic;
+    public AudioSource backGroundMusic;
     public AudioListener audioListener;
     public RecordManager recordManager;
-
     private float transitionTimeDelta = 0.2f;
     public float transitionTimer = 0f;
-
     private bool bblWasPressed = false;
-    //public int activeEmotion = 0;
-    //private int prevActiveEmotion = 0;
-    //private int tutorialIndex = 0;
     public bool nextButtonPressed = false;
     private int errors;
-    //private int guessIndex = -1;
-
     private float assessmentTimer;
-
     public GameObject hintMenu;
-
     public GameObject experienceRing;
-
     private int totalCoins = 0;
-
-    //public ScenarioStateMachine scenarioStateMachine;
 
     void Start()
     {
@@ -84,8 +72,6 @@ public class ScenarioOneOutroState : GameState
     }
     override public void ShutDownState()
     {
-        //tenable locomationObject
-        //locomotionObject.SetActive(true);
         if (recordManager != null)
         {
             User loggedInUser = recordManager.GetLoggedInUser();
@@ -99,13 +85,7 @@ public class ScenarioOneOutroState : GameState
         ScenarioOneOutroObject.SetActive(false);
         ScenarioOneEnvironmentObject.SetActive(false);
         ScenarioOnePlayers.SetActive(false);
-
-
-        //if (backGroundMusic is not null)
-        //{
-        //    //backGroundMusic.oneshot
-        //    GetComponent<AudioSource>().Stop();
-        //}
+        backGroundMusic.Stop();
     }
     override public void TeleOn()
     {

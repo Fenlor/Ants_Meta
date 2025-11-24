@@ -1,9 +1,8 @@
 using Oculus.Interaction.Locomotion;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
-using static System.TimeZoneInfo;
+
 
 //This will play out the first part of the scenario and then start timer and expect user to pick correct emotion on display.
 
@@ -23,44 +22,24 @@ public class ScenarioOneIntroState : GameState
     //we are using through out the same scenario
     public GameObject ScenarioOneEnvironmentObject;
     public GameObject ScenarioOnePlayers;
-    public GameObject ScenarioOneIntroObject;
-    public AudioClip backGroundMusic;
-    //public AudioListener audioListener;
+    public GameObject ScenarioOneIntroObject;    
+    public AudioSource backGroundMusic; 
     public RecordManager recordManager;
-    //public AudioClip intructionVoiceOver;
     private bool isVoiceOverPlaying = false;
-
-    //private float transitionTimeDelta = 0.2f;
     public float transitionTimer = 0f;
-
-    //private bool bblWasPressed = false;
-    //public int activeEmotion = 0;
-    //private int prevActiveEmotion = 0;
-    //private int tutorialIndex = 0;
     public bool nextButtonPressed = false;
     private int errors;
-    //private int guessIndex = -1;
-
     private float assessmentTimer;
-
-    public AudioClip voiceInstructions;
+    public AudioSource voiceInstructions;
     private bool havePlayedVoice = false;
-
-    //public ScenarioStateMachine scenarioStateMachine;
-
     public GameObject SplashScreenObject;
     private bool shouldStartScenario = false;
-
     public float voiceStartDelay = 1.0f;
     private float voiceDelayTimer = 0.0f;
-
-    public AudioClip successAudio;
-
+    public AudioSource successAudio;
     public GameObject coinEffectObject;
-
     public GameObject chairObject;
     public Transform chairTeleportTransform;
-
     public GameObject teleportUser;
         
     //How to handle difficulty levels?
@@ -71,7 +50,7 @@ public class ScenarioOneIntroState : GameState
     //clean this state up and then it'll make it easier to figure out which direction\
     //just split into two states for now, make this one the easy state
 
-    public Transform xrOrigin;
+    //public Transform xrOrigin;
     //public class TeleportUser : MonoBehaviour
     //{
     //    public Transform cameraRig;
@@ -89,11 +68,13 @@ public class ScenarioOneIntroState : GameState
     public FirstPersonLocomotor locomotor;
     public OVRPlayerController playerController;
 
+    //public LocomotionMediator locomotionMediator;
+    //public TeleportationProvider teleportationProvider;
     void Start()
     {
         stateName = GameStateMachine.GameStateName.SCENARIOONEINTRO;
 
-        teleportUser.GetComponent<TeleportUser>().cameraRig = xrOrigin;
+        //teleportUser.GetComponent<TeleportUser>().cameraRig = xrOrigin;
     }
     override public void InitialiseState()
     {
@@ -107,11 +88,9 @@ public class ScenarioOneIntroState : GameState
         assessmentTimer = 0f;
         errors = 0;
 
-        if (backGroundMusic is not null) 
-        {          
-            GetComponent<AudioSource>().loop = true;
-            GetComponent<AudioSource>().clip = backGroundMusic;
-            GetComponent<AudioSource>().Play();
+        if (backGroundMusic is not null)
+        {
+            backGroundMusic.Play(); ;
         }
 
 
@@ -135,6 +114,20 @@ public class ScenarioOneIntroState : GameState
         {
 
         }
+
+        //if (teleportationProvider != null)
+        //{
+        //    //locomotionMediator.TeleportTo()
+        //    TeleportRequest teleportRequest = new TeleportRequest
+        //    {
+        //        destinationPosition = chairObject.transform.position,
+        //        destinationRotation = chairObject.transform.rotation,
+        //        matchOrientation = MatchOrientation.TargetUpAndForward
+        //    };
+        //    //locomotionMediator.(teleportRequest);
+        //    Debug.Log("QUEUING TELEPORT!");
+        //    teleportationProvider.QueueTeleportRequest(teleportRequest);
+        //}        
     }
     
     override public GameStateMachine.GameStateName UpdateState()
@@ -154,7 +147,7 @@ public class ScenarioOneIntroState : GameState
             ScenarioOneIntroObject.SetActive(true);
             if (voiceInstructions is not null)
             {
-                GetComponent<AudioSource>().PlayOneShot(voiceInstructions);
+                voiceInstructions.Play();
                 havePlayedVoice = true;
             }
 
@@ -218,7 +211,7 @@ public class ScenarioOneIntroState : GameState
                 //backGroundMusic.oneshot
                 //backGroundMusic.Play();
                 //GetComponent<AudioSource>().clip = successAudio;
-                GetComponent<AudioSource>().PlayOneShot(successAudio);
+                successAudio.Play();
 
                 //always start with giving the user a coin(or however many we decide to give)
                 //how do we know where to spawn the coin though?
@@ -226,7 +219,7 @@ public class ScenarioOneIntroState : GameState
                 //also need to add to the coin count
                 //what if chair teleport calls the function to instantiate and set off coin effects
                 //THEN when the coin reaches its target it adds to the UI element and record manager?
-                if(coinEffectObject is not null)
+                if (coinEffectObject is not null)
                 {
 
                 }
@@ -259,9 +252,7 @@ public class ScenarioOneIntroState : GameState
 
     public void SetShouldStartScenario()
     {
-        shouldStartScenario = true;
-
-       
+        shouldStartScenario = true;       
     }
 
     public void PlayVoiceOver()
