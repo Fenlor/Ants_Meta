@@ -2,15 +2,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Audio;
+using System.Data;
 
 public class PauseManager : MonoBehaviour
 {
+    public GameObject pauseMenuAnchor;
     public GameObject pauseMenuUI;
+    public Transform centerEyeTransform;
     public Image dimBackground;
     private bool isPaused = false;
     public GameObject gameStateMachine;    
     public float distance = 2.5f;
-    public Vector3 offset = new Vector3(0f, -0.3f, 0f);
+    public Vector3 offset = new Vector3(0f, 0f, 0f);
     public AudioMixer audioMixer;
     public Slider musicSlider;
     public Slider voiceSlider;
@@ -20,11 +23,12 @@ public class PauseManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        pauseMenuUI.SetActive(false);
-        SetPosition();
+        pauseMenuAnchor.SetActive(false);
+        //pauseMenuAnchor.transform.SetParent(centerEyeTransform, false);
+        //SetPosition();
         musicSlider.onValueChanged.AddListener(SetMusicVolume);
         voiceSlider.onValueChanged.AddListener(SetVoiceVolume);
-        soundFXSlider.onValueChanged.AddListener(SetSoundFXVolume);
+        soundFXSlider.onValueChanged.AddListener(SetSoundFXVolume);       
     }
 
     // Update is called once per frame
@@ -46,24 +50,32 @@ public class PauseManager : MonoBehaviour
     public void SetPosition()
     {
         Camera centerEye = Camera.main;
-        Vector3 forwardPos = centerEye.transform.position + centerEye.transform.forward * distance;
-        Vector3 finalPos = forwardPos + centerEye.transform.TransformVector(offset);
-        pauseMenuUI.transform.position = finalPos;
-        pauseMenuUI.transform.rotation = Quaternion.LookRotation(pauseMenuUI.transform.position - centerEye.transform.position);
+        Vector3 forwardPos = centerEyeTransform.position + centerEyeTransform.forward * distance;
+        ////Vector3 finalPos = forwardPos + centerEyeTransform.TransformVector(offset);
+        pauseMenuAnchor.transform.position = forwardPos; //finalPos;
+        ////pauseMenuAnchor.transform.rotation = Quaternion.LookRotation(pauseMenuAnchor.transform.position - centerEye.transform.position);
+        pauseMenuAnchor.transform.rotation = Quaternion.LookRotation(centerEyeTransform.forward, Vector3.up);
+
+        //pauseMenuAnchor.transform.SetParent(centerEyeTransform);
+        //pauseMenuAnchor.transform.localPosition = offset;
+        //pauseMenuAnchor.transform.localRotation = Quaternion.identity;
+
+        pauseMenuUI.transform.localPosition = offset;
+        pauseMenuUI.transform.rotation = Quaternion.identity;
     }
 
     public void Pause()
     {
-        pauseMenuUI.SetActive(true);
+        pauseMenuAnchor.SetActive(true);
         StartCoroutine(FadeBackground(0.5f));
         Time.timeScale = 0f;
         isPaused = true;
-        SetPosition();
+        //SetPosition();
     }
 
     public void Resume()
     {
-        pauseMenuUI.SetActive(false);
+        pauseMenuAnchor.SetActive(false);
         StartCoroutine(FadeBackground(0f));
         Time.timeScale = 1;
         isPaused = false;
@@ -104,13 +116,39 @@ public class PauseManager : MonoBehaviour
     public void SetMusicVolume(float volume)
     {
         audioMixer.SetFloat("MusicVolume", Mathf.Log10(volume) * 20);
+        //FadeToVolume("SoundFXVolume", volume);
+        Debug.Log("SetMusicVolume, volume: " + volume);
     }
     public void SetVoiceVolume(float volume)
     {
         audioMixer.SetFloat("VoiceVolume", Mathf.Log10(volume) * 20);
+        //FadeToVolume("SoundFXVolume", volume);
+        Debug.Log("SetVoiceVolume, volume: " + volume);
     }
     public void SetSoundFXVolume(float volume)
     {
         audioMixer.SetFloat("SoundFXVolume", Mathf.Log10(volume) * 20);
+        //FadeToVolume("SoundFXVolume", volume);
+        Debug.Log("SetSoundFXVolume, volume: " + volume);
+    }
+
+    public void FadeToVolume(string param, float targetVolume)
+    {
+        StartCoroutine(FadeVolumeRoutine(param, targetVolume));
+    }
+
+    IEnumerator FadeVolumeRoutine(string param, float targetVolume)
+    {
+        audioMixer.GetFloat(param, out float currentVolume);
+        float startTime = Time.time;
+
+        while (Time.time < startTime + fadeDuration)
+        {
+            float t = (Time.time - startTime) / fadeDuration;
+            float newVolume = Mathf.Lerp(currentVolume, Mathf.Log10(targetVolume) * 20f, t);
+            audioMixer.SetFloat(param, newVolume);
+            yield return null;
+        }
+        audioMixer.SetFloat(param, Mathf.Log10(targetVolume) * 20f);
     }
 }

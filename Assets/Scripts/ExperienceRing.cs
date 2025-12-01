@@ -12,7 +12,7 @@ public class ExperienceRing : MonoBehaviour
 
     private float targetFill = 0f;
     private float currentFill = 0f;
-    private int currentXP = 0;
+    //private int currentXP = 0;
     public int pendingXP = 0;
 
 

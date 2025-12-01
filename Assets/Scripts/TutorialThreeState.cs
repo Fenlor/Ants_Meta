@@ -26,7 +26,6 @@ public class TutorialThreeState : GameState
     private float transitionTimeDelta = 0.2f;
     public float transitionTimer = 0f;
 
-    private bool bblWasPressed = false;
     public int activeEmotion = 0;
     private int prevActiveEmotion = 0;
     private int tutorialIndex = 0;
@@ -132,17 +131,7 @@ public class TutorialThreeState : GameState
         }
 
         return GameStateMachine.GameStateName.TUTORIALTHREE;
-    } 
-    public void HandleBigBlueButton()
-    {
-        bblWasPressed = true;
-    }
-
-    public void NextButtonPressed()
-    {
-        bblWasPressed = true;
-    }
-
+    }    
     public void CorrectChoice()
     {
         activeEmotion++;

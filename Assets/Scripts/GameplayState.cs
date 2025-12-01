@@ -5,8 +5,7 @@ public class GameplayState : GameState
     public GameObject locomotionObject;
     [Range(0f, 1f)]
     public float timeBuffer = 0.1f;
-    private float timer = 0.0f;
-    private Vector3 posAtTeleport;
+    private float timer = 0.0f;    
     public GameObject[] happinessPanels;
     public GameObject[] sadnessPanels;
     public GameObject[] angerPanels;
